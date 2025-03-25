@@ -29,7 +29,7 @@ SECRET_KEY = 'your-secret-key-here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['alfinmathew232.pythonanywhere.com']
+ALLOWED_HOSTS = ['alfinmathew232.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -140,7 +140,30 @@ LOGIN_REDIRECT_URL = 'blog-list'
 LOGOUT_REDIRECT_URL = 'blog-list'
 LOGIN_URL = 'login'
 
-# Azure deployment settings
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'nibinjoseph2003@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '').strip()
+DEFAULT_FROM_EMAIL = 'nibinjoseph2003@gmail.com'
+
+# Site configuration
+SITE_ID = 1
+SITE_NAME = 'DIY Blog'
+
+# Domain settings
+if DEBUG:
+    DOMAIN = 'http://127.0.0.1:8004'  # Development domain with port
+else:
+    DOMAIN = 'https://alfinmathew232.pythonanywhere.com'  # Production domain
+
+# Password reset settings
+PASSWORD_RESET_TIMEOUT = 259200  # 3 days in seconds
+CSRF_TRUSTED_ORIGINS = [DOMAIN]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
@@ -148,16 +171,3 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
-# Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nibinjoseph2003@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '').strip()  # Strip any whitespace
-DEFAULT_FROM_EMAIL = 'nibinjoseph2003@gmail.com'
-SITE_DOMAIN = '127.0.0.1:8001'  # Your development domain
-
-# Site configuration
-SITE_ID = 1

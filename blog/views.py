@@ -218,13 +218,11 @@ class CustomPasswordResetView(PasswordResetView):
 
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
-        current_site = get_current_site(self.request)
-        # Ensure the domain doesn't have any leading or trailing slashes
-        site_domain = settings.SITE_DOMAIN.strip('/')
+        # Update context with proper domain
         context.update({
-            'site_name': current_site.name,
-            'site_domain': site_domain,
-            'protocol': 'http',
+            'site_name': settings.SITE_NAME,
+            'protocol': 'https' if not settings.DEBUG else 'http',
+            'domain': settings.DOMAIN.replace('http://', '').replace('https://', ''),
         })
         super().send_mail(subject_template_name, email_template_name,
                          context, from_email, to_email, html_email_template_name)
@@ -234,7 +232,11 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
-    success_url = reverse_lazy('password-reset-complete')
+    success_url = reverse_lazy('password_reset_complete')
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Your password has been successfully reset. You can now login with your new password.')
+        return super().get_success_url()
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'registration/password_reset_complete.html'
