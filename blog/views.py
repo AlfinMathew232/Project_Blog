@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.db.models import Count
 from django.contrib.auth.views import (
     PasswordResetView,
@@ -288,3 +288,8 @@ def update_user_profile(request):
                 return redirect('login')
     
     return render(request, 'blog/update_user_profile.html')
+
+def custom_logout(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('blog-list')
